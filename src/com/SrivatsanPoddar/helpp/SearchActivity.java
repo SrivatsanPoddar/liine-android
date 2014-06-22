@@ -1,64 +1,89 @@
 package com.SrivatsanPoddar.helpp;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+
+import android.app.Activity;
+import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.os.Build;
 
-public class SearchActivity extends ActionBarActivity {
-
+public class SearchActivity extends Activity{
+	
+	
+	public Node[] nodes = {new Node(1,0,"Comcast"), new Node(1,0,"Verizon")};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
+		
+		Bundle extras = this.getIntent().getExtras();
+		if (extras != null) {
 
+			Node chosenNode = (Node) extras.getSerializable("chosenNode");
+			nodes = chosenNode.getChildren();
+		}
+
+		
 		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+			getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
 		}
+
+		
+		
+//		Node comcastSupport = new Node(3,1,"Support");
+//		Node comcastNewService = new Node(4,1,"Add New Services");
+//		Node comcastNewServicePhoneNumber = new Node(5,4,"6098510053");
+//		Node comcastSupportPhoneNumber = new Node(5,4,"6098510052");
+//		Node verizonNewPhoneLine = new Node(4,1,"Add Phone Line");
+//		Node verizonNewPhoneLineNumber = new Node(5,4,"6097160816");
+		
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.search, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment {
+	public static class PlaceholderFragment extends ListFragment{
 
-		public PlaceholderFragment() {
+		Node[] fragNodes;
+		
+		@Override
+		public void onActivityCreated(Bundle savedInstanceState) {
+			super.onActivityCreated(savedInstanceState);
+			SearchActivity act = (SearchActivity) getActivity();
+			fragNodes = act.nodes;
+			ArrayAdapter<Node> adapter = new ArrayAdapter<Node>(getActivity(),android.R.layout.simple_list_item_1,fragNodes);
+			setListAdapter(adapter);
+
+		
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_search,
-					container, false);
-			return rootView;
-		}
+	    public void onListItemClick(ListView l, View v, int position, long id) {
+	        // TODO Auto-generated method stub
+	        super.onListItemClick(l, v, position, id);
+	        Node chosenNode = fragNodes[position];
+			Log.e("Reached", position + "");
+			//Node[] childrenOfChosenNode = chosenNode.childrenNodes;
+		    Intent intent = new Intent(getActivity(), SearchActivity.class);
+		    intent.putExtra("chosenNode",chosenNode);
+		    this.startActivity(intent);
+		    
+	    }
+		
+
+		
+		
+
 	}
 
 }
