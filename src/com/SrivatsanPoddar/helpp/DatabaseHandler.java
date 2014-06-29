@@ -31,4 +31,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
         db.execSQL("DROP TABLE IF EXISTS " + SERVICE_TABLE);
         onCreate(db);
     }
+    
+    public void addNode(Node node) {}
+    public Node getNode(int id) {}
+    public int updateNode(Node node) {}
+    public void deleteNode(Node node) {}
 }
