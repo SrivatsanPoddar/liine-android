@@ -1,3 +1,9 @@
+package com.SrivatsanPoddar.helpp;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
 public class DatabaseHandler extends SQLiteOpenHelper
 {
     private static final int DATABASE_VERSION = 1;
@@ -33,7 +39,13 @@ public class DatabaseHandler extends SQLiteOpenHelper
     }
     
     public void addNode(Node node) {}
-    public Node getNode(int id) {}
-    public int updateNode(Node node) {}
+    public Node getNode(int id)
+    {
+        return null;
+    }
+    public int updateNode(Node node)
+    {
+        return 0;
+    }
     public void deleteNode(Node node) {}
 }
