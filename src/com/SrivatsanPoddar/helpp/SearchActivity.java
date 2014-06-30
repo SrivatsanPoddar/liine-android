@@ -4,6 +4,7 @@ package com.SrivatsanPoddar.helpp;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -74,10 +75,17 @@ public class SearchActivity extends Activity{
 	        Node chosenNode = fragNodes[position];
 			Log.e("Reached", position + "");
 			//Node[] childrenOfChosenNode = chosenNode.childrenNodes;
-		    Intent intent = new Intent(getActivity(), SearchActivity.class);
-		    intent.putExtra("chosenNode",chosenNode);
-		    this.startActivity(intent);
-		    
+			String chosenPhoneNumber = chosenNode.getPhoneNumber();
+			if (chosenPhoneNumber == null) {
+			    Intent intent = new Intent(getActivity(), SearchActivity.class);
+			    intent.putExtra("chosenNode",chosenNode);
+			    this.startActivity(intent);
+			}
+			else {
+			    Intent intent = new Intent(Intent.ACTION_CALL);
+			    intent.setData(Uri.parse("tel:" + chosenPhoneNumber));
+			    startActivity(intent);
+			}
 	    }
 		
 
