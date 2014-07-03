@@ -5,7 +5,9 @@ import retrofit.RetrofitError;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,12 +18,16 @@ import com.google.gson.*;
 public class SearchActivity extends Activity{
 	
 	
-	public Node[] nodes;
+	public Node[] nodes = new Node[1];
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
+		
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+		StrictMode.setThreadPolicy(policy); 
 		
 		RestAdapter restAdapter = new RestAdapter.Builder().
 				setEndpoint("http://safe-hollows-9286.herokuapp.com").
@@ -33,7 +39,7 @@ public class SearchActivity extends Activity{
 		}
 		catch(RetrofitError e)
 		{
-			System.out.println(e.getCause());
+			nodes[0] = new Node(0, 0, e.getCause().toString());
 		}
 		
 		Bundle extras = this.getIntent().getExtras();
