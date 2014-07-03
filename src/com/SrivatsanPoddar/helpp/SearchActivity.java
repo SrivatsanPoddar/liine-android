@@ -1,5 +1,7 @@
 package com.SrivatsanPoddar.helpp;
 
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
@@ -9,15 +11,30 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.gson.*;
+
 public class SearchActivity extends Activity{
 	
 	
-	public Node[] nodes = {new Node(1,0,"Comcast"), new Node(1,0,"Verizon")};
+	public Node[] nodes;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
+		
+		RestAdapter restAdapter = new RestAdapter.Builder().
+				setEndpoint("http://safe-hollows-9286.herokuapp.com").
+				build();
+		HerokuService herokuService = restAdapter.create(HerokuService.class);
+		try
+		{
+			nodes = herokuService.nodes();
+		}
+		catch(RetrofitError e)
+		{
+			System.out.println(e.getCause());
+		}
 		
 		Bundle extras = this.getIntent().getExtras();
 		if (extras != null) {
