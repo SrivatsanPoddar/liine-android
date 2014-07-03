@@ -1,20 +1,14 @@
 package com.SrivatsanPoddar.helpp;
 
-
-import android.R;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.appcompat.R;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.os.Build;
 
 public class SearchActivity extends Activity{
 	
@@ -80,11 +74,5 @@ public class SearchActivity extends Activity{
 		    this.startActivity(intent);
 		    
 	    }
-		
-
-		
-		
-
 	}
-
 }

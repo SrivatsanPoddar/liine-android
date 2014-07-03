@@ -28,6 +28,7 @@ public class Node implements Serializable{
 		return parentNodeId;
 	}
 	
+	@Override
 	public String toString() {
 		return displayText;
 	}
