@@ -5,31 +5,31 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Node implements Serializable{
 
-	private int nodeId=3;
-	private int parentNodeId;
-	private String displayText;
+	private int node_id=3;
+	private int parent_node_id;
+	private String display_text;
 	
-	public Node(int node_id, int parent_node_id, String display_text) {
-		nodeId = node_id;
-		parentNodeId = parent_node_id;
-		displayText = display_text;
+	public Node(int nodeID, int parentNodeID, String displayText) {
+		node_id = nodeID;
+		parent_node_id = parentNodeID;
+		display_text = displayText;
 	}
 	
 	public Node[] getChildren() {
-        Node[] childrenNodes={new Node(nodeId*2,nodeId,"Support"),new Node(nodeId*2+1,nodeId,"Add Service"),new Node(nodeId*2+2,nodeId,"Remove Services")};
+        Node[] childrenNodes={new Node(node_id*2,node_id,"Support"),new Node(node_id*2+1,node_id,"Add Service"),new Node(node_id*2+2,node_id,"Remove Services")};
         return childrenNodes;
     }
 	
 	public int getNodeId(){
-		return nodeId;
+		return node_id;
 	}
 	
 	public int getParentNodeId() {
-		return parentNodeId;
+		return parent_node_id;
 	}
 	
 	@Override
 	public String toString() {
-		return displayText;
+		return display_text;
 	}
 }

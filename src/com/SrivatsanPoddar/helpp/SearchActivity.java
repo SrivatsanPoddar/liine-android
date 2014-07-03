@@ -31,15 +31,6 @@ public class SearchActivity extends Activity{
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
 		}
-
-		
-		
-//		Node comcastSupport = new Node(3,1,"Support");
-//		Node comcastNewService = new Node(4,1,"Add New Services");
-//		Node comcastNewServicePhoneNumber = new Node(5,4,"6098510053");
-//		Node comcastSupportPhoneNumber = new Node(5,4,"6098510052");
-//		Node verizonNewPhoneLine = new Node(4,1,"Add Phone Line");
-//		Node verizonNewPhoneLineNumber = new Node(5,4,"6097160816");
 		
 	}
 
