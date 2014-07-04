@@ -17,18 +17,19 @@ import com.google.gson.*;
 
 public class SearchActivity extends Activity{
 	
-	
-	public Node[] nodes = new Node[1];
+	public Node root;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
 		
+		//Allow us to use internet
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
 		StrictMode.setThreadPolicy(policy); 
 		
+		//Get the nodes from Heroku
+		Node[] nodes = new Node[1];
 		RestAdapter restAdapter = new RestAdapter.Builder().
 				setEndpoint("http://safe-hollows-9286.herokuapp.com").
 				build();
@@ -42,6 +43,20 @@ public class SearchActivity extends Activity{
 			nodes[0] = new Node(0, 0, e.getCause().toString());
 		}
 		
+		//Create our tree
+		root = new Node(0, 0, "Root");
+		for(Node n : nodes)
+		{
+			if(n.getParentNodeId() == 0)
+			{
+				root.addChild(n);
+			}
+			else
+			{
+				nodes[n.getParentNodeId() - 1].addChild(n);
+			}
+		}
+		
 		Bundle extras = this.getIntent().getExtras();
 		if (extras != null) {
 
@@ -49,7 +64,6 @@ public class SearchActivity extends Activity{
 			nodes = chosenNode.getChildren();
 		}
 
-		
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
 		}
@@ -68,11 +82,9 @@ public class SearchActivity extends Activity{
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
 			SearchActivity act = (SearchActivity) getActivity();
-			fragNodes = act.nodes;
+			fragNodes = act.root.getChildren();
 			ArrayAdapter<Node> adapter = new ArrayAdapter<Node>(getActivity(),android.R.layout.simple_list_item_1,fragNodes);
 			setListAdapter(adapter);
-
-		
 		}
 
 		@Override
@@ -85,7 +97,6 @@ public class SearchActivity extends Activity{
 		    Intent intent = new Intent(getActivity(), SearchActivity.class);
 		    intent.putExtra("chosenNode",chosenNode);
 		    this.startActivity(intent);
-		    
 	    }
 	}
 }

@@ -1,6 +1,7 @@
 package com.SrivatsanPoddar.helpp;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class Node implements Serializable{
@@ -8,6 +9,7 @@ public class Node implements Serializable{
 	private int node_id=3;
 	private int parent_node_id;
 	private String display_text;
+	private ArrayList<Node> children;
 	
 	public Node(int nodeID, int parentNodeID, String displayText) {
 		node_id = nodeID;
@@ -16,9 +18,13 @@ public class Node implements Serializable{
 	}
 	
 	public Node[] getChildren() {
-        Node[] childrenNodes={new Node(node_id*2,node_id,"Support"),new Node(node_id*2+1,node_id,"Add Service"),new Node(node_id*2+2,node_id,"Remove Services")};
-        return childrenNodes;
+        return (Node[]) children.toArray();
     }
+	
+	public void addChild(Node child)
+	{
+		children.add(child);
+	}
 	
 	public int getNodeId(){
 		return node_id;
