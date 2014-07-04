@@ -45,4 +45,9 @@ public class Node implements Serializable{
 	public String toString() {
 		return display_text;
 	}
+
+	public String getPhoneNumber() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
