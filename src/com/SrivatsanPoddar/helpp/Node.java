@@ -15,14 +15,21 @@ public class Node implements Serializable{
 		node_id = nodeID;
 		parent_node_id = parentNodeID;
 		display_text = displayText;
+		children = new ArrayList<Node>();
+	}
+	
+	public void initChildren()
+	{
+		children = new ArrayList<Node>();
 	}
 	
 	public Node[] getChildren() {
-        return (Node[]) children.toArray();
+        return children.toArray(new Node[children.size()]);
     }
 	
 	public void addChild(Node child)
 	{
+		assert children != null;
 		children.add(child);
 	}
 	

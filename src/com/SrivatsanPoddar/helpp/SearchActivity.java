@@ -17,7 +17,7 @@ import com.google.gson.*;
 
 public class SearchActivity extends Activity{
 	
-	public Node root;
+	public Node[] nodes = new Node[1];
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,6 @@ public class SearchActivity extends Activity{
 		StrictMode.setThreadPolicy(policy); 
 		
 		//Get the nodes from Heroku
-		Node[] nodes = new Node[1];
 		RestAdapter restAdapter = new RestAdapter.Builder().
 				setEndpoint("http://safe-hollows-9286.herokuapp.com").
 				build();
@@ -43,8 +42,14 @@ public class SearchActivity extends Activity{
 			nodes[0] = new Node(0, 0, e.getCause().toString());
 		}
 		
+		//No idea why we need this but we do
+		for(Node n : nodes)
+		{
+			n.initChildren();
+		}
+		
 		//Create our tree
-		root = new Node(0, 0, "Root");
+		Node root = new Node(0, 0, "Root");
 		for(Node n : nodes)
 		{
 			if(n.getParentNodeId() == 0)
@@ -67,7 +72,6 @@ public class SearchActivity extends Activity{
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
 		}
-		
 	}
 
 
@@ -82,7 +86,7 @@ public class SearchActivity extends Activity{
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
 			SearchActivity act = (SearchActivity) getActivity();
-			fragNodes = act.root.getChildren();
+			fragNodes = act.nodes;
 			ArrayAdapter<Node> adapter = new ArrayAdapter<Node>(getActivity(),android.R.layout.simple_list_item_1,fragNodes);
 			setListAdapter(adapter);
 		}
