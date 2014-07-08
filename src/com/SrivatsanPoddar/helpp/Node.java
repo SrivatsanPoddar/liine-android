@@ -12,10 +12,11 @@ public class Node implements Serializable{
 	private String phone_number;
 	private ArrayList<Node> children;
 	
-	public Node(int nodeID, int parentNodeID, String displayText) {
+	public Node(int nodeID, int parentNodeID, String displayText, String phoneNumber) {
 		node_id = nodeID;
 		parent_node_id = parentNodeID;
 		display_text = displayText;
+		phone_number = phoneNumber;
 		children = new ArrayList<Node>();
 	}
 	

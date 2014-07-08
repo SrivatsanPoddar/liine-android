@@ -42,7 +42,7 @@ public class SearchActivity extends Activity{
 		}
 		catch(RetrofitError e)
 		{
-			tempNodes[0] = new Node(0, 0, e.getCause().toString());
+			tempNodes[0] = new Node(0, 0, e.getCause().toString(), null);
 		}
 		
 		//No idea why we need this but we do
@@ -52,7 +52,7 @@ public class SearchActivity extends Activity{
 		}
 		
 		//Create our tree
-		Node root = new Node(0, 0, "Root");
+		Node root = new Node(0, 0, "Root", null);
 		for(Node n : tempNodes)
 		{
 			if(n.getParentNodeId() == 0)
