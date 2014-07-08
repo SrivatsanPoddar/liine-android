@@ -1,29 +1,71 @@
 package com.SrivatsanPoddar.helpp;
 
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.os.Build;
+
+import com.google.gson.*;
 
 public class SearchActivity extends Activity{
 	
-	
-	public Node[] nodes = {new Node(1,0,"Comcast"), new Node(1,0,"Verizon")};
+	public Node[] nodes;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
+		
+		//Allow us to use internet
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy); 
+		
+		//Get the nodes from Heroku
+		Node[] tempNodes = new Node[1];
+		RestAdapter restAdapter = new RestAdapter.Builder().
+				setEndpoint("http://safe-hollows-9286.herokuapp.com").
+				build();
+		HerokuService herokuService = restAdapter.create(HerokuService.class);
+		try
+		{
+			tempNodes = herokuService.nodes();
+		}
+		catch(RetrofitError e)
+		{
+			tempNodes[0] = new Node(0, 0, e.getCause().toString());
+		}
+		
+		//No idea why we need this but we do
+		for(Node n : tempNodes)
+		{
+			n.initChildren();
+		}
+		
+		//Create our tree
+		Node root = new Node(0, 0, "Root");
+		for(Node n : tempNodes)
+		{
+			if(n.getParentNodeId() == 0)
+			{
+				root.addChild(n);
+			}
+			else
+			{
+				tempNodes[n.getParentNodeId() - 1].addChild(n);
+			}
+		}
+		
+		nodes = root.getChildren();
 		
 		Bundle extras = this.getIntent().getExtras();
 		if (extras != null) {
@@ -32,20 +74,9 @@ public class SearchActivity extends Activity{
 			nodes = chosenNode.getChildren();
 		}
 
-		
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
 		}
-
-		
-		
-//		Node comcastSupport = new Node(3,1,"Support");
-//		Node comcastNewService = new Node(4,1,"Add New Services");
-//		Node comcastNewServicePhoneNumber = new Node(5,4,"6098510053");
-//		Node comcastSupportPhoneNumber = new Node(5,4,"6098510052");
-//		Node verizonNewPhoneLine = new Node(4,1,"Add Phone Line");
-//		Node verizonNewPhoneLineNumber = new Node(5,4,"6097160816");
-		
 	}
 
 
@@ -74,16 +105,17 @@ public class SearchActivity extends Activity{
 	        Node chosenNode = fragNodes[position];
 			Log.e("Reached", position + "");
 			//Node[] childrenOfChosenNode = chosenNode.childrenNodes;
-		    Intent intent = new Intent(getActivity(), SearchActivity.class);
-		    intent.putExtra("chosenNode",chosenNode);
-		    this.startActivity(intent);
-		    
+			String chosenPhoneNumber = chosenNode.getPhoneNumber();
+			if (chosenPhoneNumber == null) {
+			    Intent intent = new Intent(getActivity(), SearchActivity.class);
+			    intent.putExtra("chosenNode",chosenNode);
+			    this.startActivity(intent);
+			}
+			else {
+			    Intent intent = new Intent(Intent.ACTION_CALL);
+			    intent.setData(Uri.parse("tel:" + chosenPhoneNumber));
+			    startActivity(intent);
+			}
 	    }
-		
-
-		
-		
-
 	}
-
 }
