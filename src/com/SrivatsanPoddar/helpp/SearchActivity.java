@@ -2,7 +2,6 @@ package com.SrivatsanPoddar.helpp;
 
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
-
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
@@ -17,6 +16,7 @@ import android.widget.ListView;
 
 import com.google.gson.*;
 
+@SuppressWarnings("unused")
 public class SearchActivity extends Activity{
 	
 	public Node[] nodes;
