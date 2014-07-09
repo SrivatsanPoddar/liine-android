@@ -69,7 +69,7 @@ public class SearchActivity extends Activity{
 			}
 			else
 			{
-				tempNodes[n.getParentNodeId() - 1].addChild(n);  //This only works if the node ID matches with the ordering of the returned node[], right?
+				tempNodes[n.getParentNodeId() - 1].addChild(n); //The ordering in the array is by node_id
 			}
 		}
 		
