@@ -46,5 +46,11 @@
     <string name="abc_shareactionprovider_share_with">Share with</string>
     
     <string name="app_name">Helpp</string>
+    
+    <string name="survey_intro">Help Us Improve Our Service!</string>
+    
+    <string name="question_display_text">How was our Service?</string>
+    
+    <string name="search_text">search...</string>
 
 </resources>
