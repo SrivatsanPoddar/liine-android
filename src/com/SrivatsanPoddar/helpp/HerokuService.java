@@ -4,8 +4,6 @@ import retrofit.http.GET;
 
 public interface HerokuService
 {
-	@GET("/")  //The endpoint should be '/nodes' -ppod
+	@GET("/nodes")
 	Node[] nodes();
-	
-	
 }
