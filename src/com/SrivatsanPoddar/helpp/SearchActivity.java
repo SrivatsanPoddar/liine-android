@@ -94,7 +94,7 @@ public class SearchActivity extends Activity
             }
 
             // Create our tree
-            Node root = new Node(0, 0, "Root", null);
+            Node root = new Node(0, 0, "Root", null,null);
             for (Node n : tempNodes)
             {
                 if (n.getParentNodeId() == 0)
@@ -132,7 +132,8 @@ public class SearchActivity extends Activity
                                             // survey
         EditText searchText;
         ArrayAdapter<Node> adapter;
-
+        Node chosenNode;
+        
         @Override
         public void onActivityCreated(Bundle savedInstanceState)
         {
@@ -181,9 +182,8 @@ public class SearchActivity extends Activity
             if (endActionInitiated)
             {
                 Intent intent = new Intent(getActivity(), SurveyActivity.class);
-                int store_id = 1; // replace this with the store_id of the
-                                  // associated node
-                intent.putExtra("store_id", store_id);
+
+                intent.putExtra("company_id", chosenNode.getCompanyId());
                 this.startActivity(intent);
             }
         }
@@ -192,7 +192,7 @@ public class SearchActivity extends Activity
         public void onListItemClick(ListView l, View v, int position, long id)
         {
             super.onListItemClick(l, v, position, id);
-            Node chosenNode = fragNodes[position];
+            chosenNode = fragNodes[position];
             Log.e("Reached", position + "");
             // Node[] childrenOfChosenNode = chosenNode.childrenNodes;
             String chosenPhoneNumber = chosenNode.getPhoneNumber();
