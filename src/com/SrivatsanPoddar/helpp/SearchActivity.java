@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -26,11 +27,13 @@ import android.widget.ListView;
 import com.google.gson.*;
 
 @SuppressWarnings("unused")
-public class SearchActivity extends Activity
+public class SearchActivity extends Activity implements Callback<Node[]>
 {
 
     public Node[] nodes;
     private Node[] tempNodes;
+    CountDownLatch latch = new CountDownLatch(1);
+    HerokuService nodeService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,33 +53,19 @@ public class SearchActivity extends Activity
         // Otherwise grab the nodes from Heroku and create the tree
         else
         {
-            //Get the nodes from heroku, and block until we get them
-            final CountDownLatch latch = new CountDownLatch(1);
-            Thread thread = new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    try
-                    {
-                        // Get the nodes from Heroku
-                        RestAdapter restAdapter = new RestAdapter.Builder()
-                                .setEndpoint("http://safe-hollows-9286.herokuapp.com")
-                                .build();
-                        HerokuService herokuService = restAdapter.create(HerokuService.class);
-                        tempNodes = herokuService.nodes();
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                    latch.countDown();
-                }
-            });
-            thread.start();
+            // Get the nodes from Heroku
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint("http://safe-hollows-9286.herokuapp.com")
+                .build();
+            nodeService = restAdapter.create(HerokuService.class);       
+            nodeService.nodes(this);
             try
             {
-                latch.await();
+                synchronized(latch)
+                {
+                    latch.await(5000, TimeUnit.MILLISECONDS);
+                }
             }
             catch (InterruptedException e)
             {
@@ -116,6 +105,26 @@ public class SearchActivity extends Activity
         {
             getFragmentManager().beginTransaction()
                     .add(R.id.frame_layout, new PlaceholderFragment()).commit();
+        }
+    }
+    
+    @Override
+    public void failure(RetrofitError arg0)
+    {
+        Log.e("Error retreiving nodes from database:", arg0.toString());
+        synchronized(latch)
+        {
+            this.latch.countDown();
+        }
+    }
+
+    @Override
+    public void success(Node[] arg0, Response arg1)
+    {
+        this.tempNodes = arg0;
+        synchronized(latch)
+        {
+            this.latch.countDown();
         }
     }
 

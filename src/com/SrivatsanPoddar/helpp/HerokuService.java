@@ -13,7 +13,7 @@ import retrofit.http.Path;
 public interface HerokuService
 {
 	@GET("/nodes")
-	Node[] nodes();
+	void nodes(Callback<Node[]> cb);
 	
 	@GET("/{company_id}/questions")
     void getQuestions(@Path("company_id") String company_id, Callback<ArrayList<SurveyQuestion>> cb);

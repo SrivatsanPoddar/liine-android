@@ -35,18 +35,15 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
 		String company_id = extras.getString("company_id");
 		
 		//Make retrofit GET call to '/:store_id/questions' to get survey questions associated with a given store
-        RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL).setEndpoint("http://safe-hollows-9286.herokuapp.com").build();
+        RestAdapter restAdapter = new RestAdapter.Builder()
+            .setLogLevel(RestAdapter.LogLevel.FULL)
+            .setEndpoint("http://safe-hollows-9286.herokuapp.com")
+            .build();
         ui = restAdapter.create(HerokuService.class);       
         ui.getQuestions(company_id,this);
         
-
-		
 		optionsList = (ListView)findViewById(R.id.question_options_list);
 		optionsList.setOnItemClickListener(this);
-		
-
-		
-		
 	}
 	
 	  @Override
@@ -121,11 +118,7 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
         
         
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
-        optionsList.setAdapter(adapter);
-        
-        
-        
-        
+        optionsList.setAdapter(adapter);        
     }
 }
 
