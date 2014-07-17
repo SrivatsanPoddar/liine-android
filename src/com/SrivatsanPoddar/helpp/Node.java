@@ -6,7 +6,7 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public class Node implements Serializable{
 
-	private int node_id=3;
+	private int node_id;
 	private int parent_node_id;
 	private String display_text;
 	private String phone_number;

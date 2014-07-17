@@ -1,6 +1,7 @@
 package com.SrivatsanPoddar.helpp;
 
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
@@ -32,14 +33,16 @@ public class SearchActivity extends Activity implements Callback<Node[]>
 
     public Node[] nodes;
     private Node[] tempNodes;
-    CountDownLatch latch = new CountDownLatch(1);
-    HerokuService nodeService;
+    private HerokuService nodeService;
+    Bundle state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        
+        state = savedInstanceState;
 
         Bundle extras = this.getIntent().getExtras();
 
@@ -49,6 +52,11 @@ public class SearchActivity extends Activity implements Callback<Node[]>
         {
             Node chosenNode = (Node) extras.getSerializable("chosenNode");
             nodes = chosenNode.getChildren();
+            if (state == null)
+            {
+                getFragmentManager().beginTransaction()
+                        .add(R.id.frame_layout, new PlaceholderFragment()).commit();
+            }
         }
         // Otherwise grab the nodes from Heroku and create the tree
         else
@@ -60,51 +68,6 @@ public class SearchActivity extends Activity implements Callback<Node[]>
                 .build();
             nodeService = restAdapter.create(HerokuService.class);       
             nodeService.nodes(this);
-            try
-            {
-                synchronized(latch)
-                {
-                    latch.await(5000, TimeUnit.MILLISECONDS);
-                }
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-
-            // We use a hashtable as well to avoid indexing issues
-            Hashtable<Integer, Node> nodeHash = new Hashtable<Integer, Node>();
-            for (Node n : tempNodes)
-            {
-                // Initialize child lists
-                n.initChildren();
-                // Insert into hashtable
-                nodeHash.put(n.getNodeId(), n);
-            }
-
-            // Create our tree
-            Node root = new Node(0, 0, "Root", null,null);
-            for (Node n : tempNodes)
-            {
-                if (n.getParentNodeId() == 0)
-                {
-                    root.addChild(n);
-                }
-                else
-                {
-                    // Use the hashtable to get the parents
-                    nodeHash.get(n.getParentNodeId()).addChild(n);
-                }
-            }
-
-            // Start with the topmost children
-            nodes = root.getChildren();
-        }
-
-        if (savedInstanceState == null)
-        {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.frame_layout, new PlaceholderFragment()).commit();
         }
     }
     
@@ -112,19 +75,46 @@ public class SearchActivity extends Activity implements Callback<Node[]>
     public void failure(RetrofitError arg0)
     {
         Log.e("Error retreiving nodes from database:", arg0.toString());
-        synchronized(latch)
-        {
-            this.latch.countDown();
-        }
     }
 
     @Override
     public void success(Node[] arg0, Response arg1)
     {
-        this.tempNodes = arg0;
-        synchronized(latch)
+        Log.e("Success retrieving nodes from database:", Arrays.toString(arg0));
+        tempNodes = arg0;
+        
+        // We use a hashtable as well to avoid indexing issues
+        Hashtable<Integer, Node> nodeHash = new Hashtable<Integer, Node>();
+        for (Node n : tempNodes)
         {
-            this.latch.countDown();
+            // Initialize child lists
+            n.initChildren();
+            // Insert into hashtable
+            nodeHash.put(n.getNodeId(), n);
+        }
+
+        // Create our tree
+        Node root = new Node(0, 0, "Root", null,null);
+        for (Node n : tempNodes)
+        {
+            if (n.getParentNodeId() == 0)
+            {
+                root.addChild(n);
+            }
+            else
+            {
+                // Use the hashtable to get the parents
+                nodeHash.get(n.getParentNodeId()).addChild(n);
+            }
+        }
+
+        // Start with the topmost children
+        nodes = root.getChildren();
+        
+        if (state == null)
+        {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.frame_layout, new PlaceholderFragment()).commit();
         }
     }
 
