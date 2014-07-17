@@ -7,6 +7,7 @@ public class SurveyQuestion {
 	private String[] options;
 	private String question_id;
 	private String response;
+	private String device_id;
 	
 	public SurveyQuestion(String myQuestionType, String myDisplayText, String[] myOptions, String myQuestionID) {
 		question_type = myQuestionType;
@@ -31,5 +32,7 @@ public class SurveyQuestion {
 		response = myResponse;
 	}
 	
-	
+	public void setDeviceID(String myDeviceId) {
+	    device_id = myDeviceId;
+	}
 }

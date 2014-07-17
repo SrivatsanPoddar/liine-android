@@ -24,7 +24,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import com.google.gson.*;
 
 @SuppressWarnings("unused")
@@ -130,7 +129,7 @@ public class SearchActivity extends Activity implements Callback<Node[]>
                                             // phone call in order to trigger
                                             // survey
         EditText searchText;
-        ArrayAdapter<Node> adapter;
+        CustomListAdapter<Node> adapter;
         Node chosenNode;
         
         @Override
@@ -139,8 +138,12 @@ public class SearchActivity extends Activity implements Callback<Node[]>
             super.onActivityCreated(savedInstanceState);
             SearchActivity act = (SearchActivity) getActivity();
             fragNodes = act.nodes;
-            adapter = new ArrayAdapter<Node>(getActivity(),
-                    android.R.layout.simple_list_item_1, fragNodes);
+            
+            adapter = new CustomListAdapter(getActivity(),android.R.layout.simple_list_item_1,fragNodes);
+            //aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            //promotionsList.setAdapter(aa);
+            
+            
             setListAdapter(adapter);
 
             // Implement Search Functionality

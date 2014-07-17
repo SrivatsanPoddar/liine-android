@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.provider.Settings.Secure;
 
 public class SurveyActivity extends Activity implements ListView.OnItemClickListener, Callback<ArrayList<SurveyQuestion>>{
 	
@@ -30,6 +31,11 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_survey);
+		
+		TextView surveyIntro = (TextView) findViewById(R.id.survey_intro);
+		Style.toOpenSans(this, surveyIntro, "light");
+		
+		
 		
 		Bundle extras = this.getIntent().getExtras();
 		String company_id = extras.getString("company_id");
@@ -53,6 +59,7 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
 		  	//Make a retrofit POST call to '/responses/questionID' here, sending questions[currentQuestionIndex].getOptions()[position] as the response!
 	        SurveyQuestion curQuestion = questions.get(currentQuestionsIndex);
 	        curQuestion.setResponse(curQuestion.getOptions()[position]);
+	        curQuestion.setDeviceID(Secure.getString(this.getApplicationContext().getContentResolver(),Secure.ANDROID_ID));
 		    ui.addResponse(curQuestion, new postResponse());
 		    
 		  	if (currentQuestionsIndex < questions.size() - 1) {
@@ -61,11 +68,14 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
 		  		currentQuestionsIndex++;
 				questionDisplayText.setText(questions.get(currentQuestionsIndex).getDisplayText());
 				
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
+				//ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
+				CustomListAdapter<String> adapter = new CustomListAdapter(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
+		        
 				optionsList.setAdapter(adapter);
 				
 		  	}
 		  	else {
+		  	    Style.makeToast(this, "Thanks for your time!");
 	  			Intent intent = new Intent(this, SearchActivity.class);
 			    startActivity(intent);
 		  	}
@@ -115,9 +125,10 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
         questions = returnedList;  
         questionDisplayText = (TextView)findViewById(R.id.question_display_text);
         questionDisplayText.setText(questions.get(currentQuestionsIndex).getDisplayText());
+        Style.toOpenSans(this, questionDisplayText, "light");
         
-        
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
+        CustomListAdapter<String> adapter = new CustomListAdapter(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
         optionsList.setAdapter(adapter);        
     }
 }

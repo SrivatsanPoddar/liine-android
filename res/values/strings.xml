@@ -51,6 +51,6 @@
     
     <string name="question_display_text">How was our Service?</string>
     
-    <string name="search_text">search...</string>
+    <string name="search_text">type to begin search...</string>
 
 </resources>
