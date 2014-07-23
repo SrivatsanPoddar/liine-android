@@ -45,7 +45,7 @@
     <!-- Description of the choose target button in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] -->
     <string name="abc_shareactionprovider_share_with">Share with</string>
     
-    <string name="app_name">Helpp</string>
+    <string name="app_name">Liine</string>
     
     <string name="survey_intro">Help Us Improve Our Service!</string>
     

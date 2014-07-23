@@ -123,13 +123,21 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
 //        questions[1] = q2;
 //      
         questions = returnedList;  
-        questionDisplayText = (TextView)findViewById(R.id.question_display_text);
-        questionDisplayText.setText(questions.get(currentQuestionsIndex).getDisplayText());
-        Style.toOpenSans(this, questionDisplayText, "light");
-        
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
-        CustomListAdapter<String> adapter = new CustomListAdapter(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
-        optionsList.setAdapter(adapter);        
+        if (questions.size() == 0) {
+            Style.makeToast(this, "Thanks for the call!");
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
+        }
+        else {
+            questionDisplayText = (TextView)findViewById(R.id.question_display_text);
+            questionDisplayText.setText(questions.get(currentQuestionsIndex).getDisplayText());
+            Style.toOpenSans(this, questionDisplayText, "light");
+            
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
+            CustomListAdapter<String> adapter = new CustomListAdapter(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
+            optionsList.setAdapter(adapter);   
+        }
+     
     }
 }
 

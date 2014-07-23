@@ -17,4 +17,7 @@
     <color name="abc_search_url_text_normal">#7fa87f</color>
     <color name="abc_search_url_text_selected">@android:color/black</color>
     <color name="abc_search_url_text_pressed">@android:color/black</color>
+    <color name="background_blue">#EEF9FF</color>
+    <color name="icon_blue">#C4D5E0</color>
+    
 </resources>

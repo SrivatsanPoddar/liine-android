@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/search_text" />
+        android:hint="@string/search_text"
+        android:textColorLink="@android:color/darker_gray" />
 
     <FrameLayout
         android:id="@+id/frame_layout"

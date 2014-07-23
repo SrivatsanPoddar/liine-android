@@ -44,7 +44,11 @@ public class SearchActivity extends Activity implements Callback<Node[]>
         state = savedInstanceState;
 
         Bundle extras = this.getIntent().getExtras();
-
+        
+        EditText searchText = (EditText) findViewById(R.id.search_text);
+        Style.toOpenSans(this, searchText, "light");
+        
+        
         // Check if this activity was started clicking of non-root node. If so,
         // find and display children of that node
         if (extras != null)
@@ -194,7 +198,9 @@ public class SearchActivity extends Activity implements Callback<Node[]>
         public void onListItemClick(ListView l, View v, int position, long id)
         {
             super.onListItemClick(l, v, position, id);
-            chosenNode = fragNodes[position];
+            chosenNode = (Node) getListView().getItemAtPosition(position);
+            
+            //chosenNode = fragNodes[position];
             Log.e("Reached", position + "");
             // Node[] childrenOfChosenNode = chosenNode.childrenNodes;
             String chosenPhoneNumber = chosenNode.getPhoneNumber();
