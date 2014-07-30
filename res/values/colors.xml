@@ -19,5 +19,5 @@
     <color name="abc_search_url_text_pressed">@android:color/black</color>
     <color name="background_blue">#EEF9FF</color>
     <color name="icon_blue">#C4D5E0</color>
-    
+    <drawable name="actionbar_background">#C4D5E0</drawable>
 </resources>

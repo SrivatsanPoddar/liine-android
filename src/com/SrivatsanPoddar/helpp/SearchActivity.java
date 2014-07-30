@@ -11,6 +11,7 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -34,13 +36,15 @@ public class SearchActivity extends Activity implements Callback<Node[]>
     private Node[] tempNodes;
     private HerokuService nodeService;
     Bundle state;
+   // private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        
+        final ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
         state = savedInstanceState;
 
         Bundle extras = this.getIntent().getExtras();
@@ -71,6 +75,23 @@ public class SearchActivity extends Activity implements Callback<Node[]>
                 .build();
             nodeService = restAdapter.create(HerokuService.class);       
             nodeService.nodes(this);
+        }
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        
+        Log.e("Menu Item Id", item.getItemId()+"");
+        
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                //Do stuff
+                Intent intent = new Intent(this, SearchActivity.class);
+                startActivity(intent);
+                
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
     

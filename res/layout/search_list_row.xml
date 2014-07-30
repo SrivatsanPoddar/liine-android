@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingBottom="15dp"
-        android:paddingTop="15dp"
+        android:paddingBottom="17dp"
+        android:paddingTop="17dp"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
  

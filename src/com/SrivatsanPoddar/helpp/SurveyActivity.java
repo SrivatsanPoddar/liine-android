@@ -8,10 +8,12 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,6 +34,9 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_survey);
 		
+        final ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        
 		TextView surveyIntro = (TextView) findViewById(R.id.survey_intro);
 		Style.toOpenSans(this, surveyIntro, "light");
 		
@@ -52,6 +57,21 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
 		optionsList.setOnItemClickListener(this);
 	}
 	
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            //Do stuff
+            Style.makeToast(this, "Thanks for your time!");
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
+            
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+    
 	  @Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
