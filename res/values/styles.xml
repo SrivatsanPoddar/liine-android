@@ -241,5 +241,9 @@
     <style name="Widget.AppCompat.Light.ActivityChooserView"
            parent="Widget.AppCompat.Light.Base.ActivityChooserView">
     </style>
+    
+    <style name="splashScreenTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+    	<item name="android:windowBackground">@drawable/main_icon</item>
+	</style>
 
 </resources>

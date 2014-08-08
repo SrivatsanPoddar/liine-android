@@ -23,9 +23,11 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+
 import com.google.gson.*;
 
 @SuppressWarnings("unused")
@@ -43,8 +45,8 @@ public class SearchActivity extends Activity implements Callback<Node[]>
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        final ActionBar actionBar = getActionBar();
-        actionBar.setHomeButtonEnabled(true);
+        // final ActionBar actionBar = getActionBar();
+        // actionBar.setHomeButtonEnabled(true);
         state = savedInstanceState;
 
         Bundle extras = this.getIntent().getExtras();
