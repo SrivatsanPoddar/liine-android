@@ -33,32 +33,36 @@ import com.google.gson.*;
 @SuppressWarnings("unused")
 public class SearchActivity extends Activity implements Callback<Node[]>
 {
-
     public Node[] nodes;
     private Node[] tempNodes;
     private HerokuService nodeService;
     Bundle state;
-   // private ActionBar actionBar;
+    private ActionBar actionBar;
+    private long startTime;
+    private final int SPLASH_DISPLAY_LENGTH = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        this.setTheme(R.style.CustomActionBarTheme);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-        // final ActionBar actionBar = getActionBar();
-        // actionBar.setHomeButtonEnabled(true);
+        setContentView(R.layout.splash);
         state = savedInstanceState;
-
         Bundle extras = this.getIntent().getExtras();
         
-        EditText searchText = (EditText) findViewById(R.id.search_text);
-        Style.toOpenSans(this, searchText, "light");
-        
+        //Calculate passage of time to ensure splash screen displayed for 2s
+        startTime = System.currentTimeMillis();
         
         // Check if this activity was started clicking of non-root node. If so,
         // find and display children of that node
         if (extras != null)
         {
+            setContentView(R.layout.activity_search);
+            final ActionBar actionBar = getActionBar();
+            actionBar.setHomeButtonEnabled(true);        
+            EditText searchText = (EditText) findViewById(R.id.search_text);
+            Style.toOpenSans(this, searchText, "light");
+            
             Node chosenNode = (Node) extras.getSerializable("chosenNode");
             nodes = chosenNode.getChildren();
             if (state == null)
@@ -105,7 +109,7 @@ public class SearchActivity extends Activity implements Callback<Node[]>
 
     @Override
     public void success(Node[] arg0, Response arg1)
-    {
+    {        
         Log.e("Success retrieving nodes from database:", Arrays.toString(arg0));
         tempNodes = arg0;
         
@@ -142,6 +146,27 @@ public class SearchActivity extends Activity implements Callback<Node[]>
             getFragmentManager().beginTransaction()
                     .add(R.id.frame_layout, new PlaceholderFragment()).commit();
         }
+        
+        //See how much longer to show splash screen
+        long loadTime = System.currentTimeMillis() - startTime;
+        if(loadTime < SPLASH_DISPLAY_LENGTH)
+        {
+            try
+            {
+                Thread.sleep(SPLASH_DISPLAY_LENGTH - loadTime);
+            }
+            catch (InterruptedException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        
+        setContentView(R.layout.activity_search);
+        final ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);        
+        EditText searchText = (EditText) findViewById(R.id.search_text);
+        Style.toOpenSans(this, searchText, "light");
     }
 
     /**
