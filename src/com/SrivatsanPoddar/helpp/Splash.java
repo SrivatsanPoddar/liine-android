@@ -16,12 +16,13 @@ public class Splash extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.splash);
 
+        //TODO Wait at minimum 2s no seperate threads, load data here
         /* New Handler to start the Menu-Activity 
          * and close this Splash-Screen after some seconds.*/
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                /* Create an Intent that will start the Menu-Activity. */
+                // Create an Intent that will start the Menu-Activity.
                 Intent mainIntent = new Intent(Splash.this, SearchActivity.class);
                 Splash.this.startActivity(mainIntent);
                 Splash.this.finish();

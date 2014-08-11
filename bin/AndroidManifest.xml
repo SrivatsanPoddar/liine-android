@@ -14,23 +14,26 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@style/CustomActionBarTheme" >
         <activity
             android:name="com.SrivatsanPoddar.helpp.SearchActivity"
             android:windowSoftInputMode="stateHidden"
-            android:label="@string/app_name"
-            android:theme="@style/splashScreenTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            
+            android:label="@string/app_name" >            
         </activity>
         
         <activity
             android:name="com.SrivatsanPoddar.helpp.SurveyActivity"
             android:label="@string/app_name" >
+        </activity>
+        
+        <activity
+            android:name="com.SrivatsanPoddar.helpp.Splash"
+            android:theme="@layout/splash" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         
     </application>
