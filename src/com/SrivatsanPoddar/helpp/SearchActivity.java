@@ -226,8 +226,15 @@ public class SearchActivity extends Activity implements Callback<Node[]>
                             .toLowerCase(Locale.getDefault());
                     adapter.getFilter().filter(text);
                     
-                    //Show button
-                    button.setVisibility(View.VISIBLE);
+                    //Show or hide button
+                    if(!searchText.getText().toString().equals(""))
+                    {
+                        button.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        button.setVisibility(View.GONE);
+                    }
                 }
 
                 @Override
