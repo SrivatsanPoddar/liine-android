@@ -18,9 +18,17 @@
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
+        android:layout_height="0dp"
+        android:layout_weight="1.17" >
     </FrameLayout>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/search_button"
+        style="@style/CustomActionBarTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:drawableLeft="@drawable/ic_action_search"
+        android:text="@string/google_text" />
 
+</LinearLayout>

@@ -1,5 +1,7 @@
 package com.SrivatsanPoddar.helpp;
 
+import android.graphics.Color;
+
 import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -14,6 +16,7 @@ import retrofit.client.Response;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ListFragment;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -25,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -194,9 +198,20 @@ public class SearchActivity extends Activity implements Callback<Node[]>
             adapter = new CustomListAdapter(getActivity(),android.R.layout.simple_list_item_1,fragNodes);
             //aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             //promotionsList.setAdapter(aa);
-            
-            
             setListAdapter(adapter);
+            
+            // Set up google search listener
+            final Button button = (Button) getActivity().findViewById(R.id.search_button);
+            button.setVisibility(View.GONE);
+            button.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);   
+                    intent.putExtra(SearchManager.QUERY, searchText.getText().toString() + " customer support");    
+                    startActivity(intent);
+                }
+            });
 
             // Implement Search Functionality
             searchText = (EditText) getActivity()
@@ -210,6 +225,9 @@ public class SearchActivity extends Activity implements Callback<Node[]>
                     String text = searchText.getText().toString()
                             .toLowerCase(Locale.getDefault());
                     adapter.getFilter().filter(text);
+                    
+                    //Show button
+                    button.setVisibility(View.VISIBLE);
                 }
 
                 @Override

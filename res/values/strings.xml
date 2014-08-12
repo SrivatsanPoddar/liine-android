@@ -52,5 +52,7 @@
     <string name="question_display_text">How was our Service?</string>
     
     <string name="search_text">type to begin search...</string>
-
+    
+    <string name="google_text">Didn\'t find what you\'re looking for?</string>
+    
 </resources>
