@@ -67,6 +67,9 @@ public class SearchActivity extends Activity implements Callback<Node[]>
             EditText searchText = (EditText) findViewById(R.id.search_text);
             Style.toOpenSans(this, searchText, "light");
             
+            // Hide search bar since we're in a tree
+            searchText.setVisibility(View.GONE);
+            
             Node chosenNode = (Node) extras.getSerializable("chosenNode");
             nodes = chosenNode.getChildren();
             if (state == null)
