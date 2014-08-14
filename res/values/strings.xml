@@ -53,6 +53,6 @@
     
     <string name="search_text">type to begin search...</string>
     
-    <string name="google_text">Didn\'t find what you\'re looking for?</string>
+    <string name="google_text">More results from Google</string>
     
 </resources>
