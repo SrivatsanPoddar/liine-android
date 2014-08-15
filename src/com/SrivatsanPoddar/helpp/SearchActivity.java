@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -279,7 +280,7 @@ public class SearchActivity extends Activity implements Callback<Node[]>
             //chosenNode = fragNodes[position];
             Log.e("Reached", position + "");
             // Node[] childrenOfChosenNode = chosenNode.childrenNodes;
-            String chosenPhoneNumber = chosenNode.getPhoneNumber();
+            String chosenPhoneNumber = PhoneNumberUtils.stripSeparators(chosenNode.getPhoneNumber());
             if (chosenPhoneNumber == null)
             {
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
