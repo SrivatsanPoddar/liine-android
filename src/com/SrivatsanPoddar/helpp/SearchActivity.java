@@ -36,38 +36,29 @@ import android.widget.ListView;
 import com.google.gson.*;
 
 @SuppressWarnings("unused")
-public class SearchActivity extends Activity implements Callback<Node[]>
+public class SearchActivity extends Activity
 {
     public Node[] nodes;
-    private Node[] tempNodes;
-    private HerokuService nodeService;
     Bundle state;
     private ActionBar actionBar;
-    private long startTime;
-    private final int SPLASH_DISPLAY_LENGTH = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        this.setTheme(R.style.CustomActionBarTheme);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash);
         state = savedInstanceState;
         Bundle extras = this.getIntent().getExtras();
         
-        //Calculate passage of time to ensure splash screen displayed for 2s
-        startTime = System.currentTimeMillis();
+        setContentView(R.layout.activity_search);
+        actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);        
+        EditText searchText = (EditText) findViewById(R.id.search_text);
+        Style.toOpenSans(this, searchText, "light");
         
         // Check if this activity was started clicking of non-root node. If so,
         // find and display children of that node
         if (extras != null)
-        {
-            setContentView(R.layout.activity_search);
-            final ActionBar actionBar = getActionBar();
-            actionBar.setHomeButtonEnabled(true);        
-            EditText searchText = (EditText) findViewById(R.id.search_text);
-            Style.toOpenSans(this, searchText, "light");
-            
+        {            
             // Hide search bar since we're in a tree
             searchText.setVisibility(View.GONE);
             
@@ -79,16 +70,15 @@ public class SearchActivity extends Activity implements Callback<Node[]>
                         .add(R.id.frame_layout, new PlaceholderFragment()).commit();
             }
         }
-        // Otherwise grab the nodes from Heroku and create the tree
+        // Otherwise we are coming from splash loader
         else
         {
-            // Get the nodes from Heroku
-            RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint("http://safe-hollows-9286.herokuapp.com")
-                .build();
-            nodeService = restAdapter.create(HerokuService.class);       
-            nodeService.nodes(this);
+            nodes = Splash.loadedNodes;
+            if (state == null)
+            {
+                getFragmentManager().beginTransaction()
+                        .add(R.id.frame_layout, new PlaceholderFragment()).commit();
+            }
         }
     }
     
@@ -107,74 +97,6 @@ public class SearchActivity extends Activity implements Callback<Node[]>
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-    
-    @Override
-    public void failure(RetrofitError arg0)
-    {
-        Log.e("Error retreiving nodes from database:", arg0.toString());
-    }
-
-    @Override
-    public void success(Node[] arg0, Response arg1)
-    {        
-        Log.e("Success retrieving nodes from database:", Arrays.toString(arg0));
-        tempNodes = arg0;
-        
-        // We use a hashtable as well to avoid indexing issues
-        Hashtable<Integer, Node> nodeHash = new Hashtable<Integer, Node>();
-        for (Node n : tempNodes)
-        {
-            // Initialize child lists
-            n.initChildren();
-            // Insert into hashtable
-            nodeHash.put(n.getNodeId(), n);
-        }
-
-        // Create our tree
-        Node root = new Node(0, 0, "Root", null,null);
-        for (Node n : tempNodes)
-        {
-            if (n.getParentNodeId() == 0)
-            {
-                root.addChild(n);
-            }
-            else
-            {
-                // Use the hashtable to get the parents
-                nodeHash.get(n.getParentNodeId()).addChild(n);
-            }
-        }
-
-        // Start with the topmost children
-        nodes = root.getChildren();
-        
-        if (state == null)
-        {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.frame_layout, new PlaceholderFragment()).commit();
-        }
-        
-        //See how much longer to show splash screen
-        long loadTime = System.currentTimeMillis() - startTime;
-        if(loadTime < SPLASH_DISPLAY_LENGTH)
-        {
-            try
-            {
-                Thread.sleep(SPLASH_DISPLAY_LENGTH - loadTime);
-            }
-            catch (InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        
-        setContentView(R.layout.activity_search);
-        final ActionBar actionBar = getActionBar();
-        actionBar.setHomeButtonEnabled(true);        
-        EditText searchText = (EditText) findViewById(R.id.search_text);
-        Style.toOpenSans(this, searchText, "light");
     }
 
     /**
