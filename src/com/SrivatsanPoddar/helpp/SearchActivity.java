@@ -121,7 +121,7 @@ public class SearchActivity extends Activity
             SearchActivity act = (SearchActivity) getActivity();
             fragNodes = act.nodes;
             
-            adapter = new CustomListAdapter(getActivity(),android.R.layout.simple_list_item_1,fragNodes);
+            adapter = new CustomListAdapter<Node>(getActivity(),android.R.layout.simple_list_item_1,fragNodes);
             //aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             //promotionsList.setAdapter(aa);
             setListAdapter(adapter);

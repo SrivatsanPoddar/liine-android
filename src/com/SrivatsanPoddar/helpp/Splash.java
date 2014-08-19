@@ -20,6 +20,7 @@ public class Splash extends Activity implements Callback<Node[]>
     private Node[] tempNodes;
     public static Node[] loadedNodes;
     private final int SPLASH_DISPLAY_LENGTH = 2000;
+    private final int ERROR_DISPLAY_LENGTH = 5000;
 
     /** Called when the activity is first created. */
     @Override
@@ -44,7 +45,15 @@ public class Splash extends Activity implements Callback<Node[]>
     {
         // Print the error and close the application
         Log.e("Error retreiving nodes from database:", arg0.toString());
-        this.finish();
+        setContentView(R.layout.error);
+        new Handler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {               
+                System.exit(0);
+            }
+        }, ERROR_DISPLAY_LENGTH);
     }
 
     @Override

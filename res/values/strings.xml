@@ -55,4 +55,8 @@
     
     <string name="google_text">More results from Google</string>
     
+    <string name="error">We can\'t access the internet.\nPlease reconnect and try again.</string>
+    
+    <string name="error_logo">:(</string>
+    
 </resources>
