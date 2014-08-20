@@ -1,7 +1,5 @@
 package com.SrivatsanPoddar.helpp;
 
-
-
 import java.util.ArrayList;
 
 import retrofit.Callback;
@@ -16,7 +14,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.provider.Settings.Secure;
@@ -39,19 +36,22 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
         
 		TextView surveyIntro = (TextView) findViewById(R.id.survey_intro);
 		Style.toOpenSans(this, surveyIntro, "light");
-		
-		
-		
+
 		Bundle extras = this.getIntent().getExtras();
 		String company_id = extras.getString("company_id");
+		
+		// Initialize the question list
+		questions = new ArrayList<SurveyQuestion>();
 		
 		//Make retrofit GET call to '/:store_id/questions' to get survey questions associated with a given store
         RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.FULL)
             .setEndpoint("http://safe-hollows-9286.herokuapp.com")
             .build();
-        ui = restAdapter.create(HerokuService.class);       
+        ui = restAdapter.create(HerokuService.class);
+        // First get company questions, then Liine questions
         ui.getQuestions(company_id,this);
+        ui.getQuestions("0", this);
         
 		optionsList = (ListView)findViewById(R.id.question_options_list);
 		optionsList.setOnItemClickListener(this);
@@ -99,9 +99,6 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
 	  			Intent intent = new Intent(this, SearchActivity.class);
 			    startActivity(intent);
 		  	}
-
-		    
-			
 		}
 
 	private class postResponse implements Callback<String> {
@@ -132,17 +129,12 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
 
     @Override
     public void success(ArrayList<SurveyQuestion> returnedList, Response res)
-    {
-//        String[] q1Options = {"True","False"};
-//        SurveyQuestion q1 = new SurveyQuestion("true_false","I was satisfied with my service today.",q1Options,"1");
-//        String[] q2Options = {"Very Prompt", "Prompt", "Not Prompt at All", "Not Applicable"};
-//        SurveyQuestion q2 = new SurveyQuestion("multiple_choice","How prompt was your service today?",q2Options,"2");
-//        
-//        questions = new SurveyQuestion[2];
-//        questions[0] = q1;
-//        questions[1] = q2;
-//      
-        questions = returnedList;  
+    {     
+        for(SurveyQuestion sq : returnedList)
+        {
+            questions.add(sq);
+        }
+        
         if (questions.size() == 0) {
             Style.makeToast(this, "Thanks for the call!");
             Intent intent = new Intent(this, SearchActivity.class);
