@@ -52,5 +52,6 @@
     <string name="question_display_text">How was our Service?</string>
     
     <string name="search_text">type to begin search...</string>
-
+	<string name="crash_toast_text">The application has crashed--please try again.</string>
+	
 </resources>

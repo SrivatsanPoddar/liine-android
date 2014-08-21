@@ -42,8 +42,8 @@ public class SearchActivity extends Activity implements Callback<Node[]>
     private HerokuService nodeService;
     Bundle state;
     private ArrayList<Node> path = new ArrayList<Node>();
-    private final WebSocketConnection mConnection = new WebSocketConnection();
-    private Gson gson = new Gson();
+    
+    
     private static final String TAG = "SearchActivity";
    // private ActionBar actionBar;
 
@@ -158,46 +158,7 @@ public class SearchActivity extends Activity implements Callback<Node[]>
         }
     }
 
-    /*
-     * Initiates a web-socket connection to send the node path to company
-     */
-    private void start(final String initialMessage) {
-
-        final String wsuri = "ws://safe-hollows-9286.herokuapp.com/live";
-
-        try {
-           mConnection.connect(wsuri, new WebSocketHandler() {
-
-              @Override
-              public void onOpen() {
-                 Log.d(TAG, "Status: Connected to " + wsuri);
-//                 ChatMessage m = new ChatMessage();
-//                 m.setString("Hello Bob!");
-//                 
-//                 String JSONMessage = gson.toJson(m);
-                 mConnection.sendTextMessage(initialMessage);
-                 
-              }
-
-              @Override
-              public void onTextMessage(String payload) {
-                 Log.d(TAG, "Got echo: " + payload);
-                 ChatMessage m = gson.fromJson(payload, ChatMessage.class);
-//                 messages.add(m);
-//                 aa = new ArrayAdapter<ChatMessage>(ChatActivity.this,android.R.layout.simple_list_item_1,messages.toArray(new ChatMessage[messages.size()]));
-//                 messageList.setAdapter(aa);
-              }
-
-              @Override
-              public void onClose(int code, String reason) {
-                 Log.d(TAG, "Connection lost.");
-              }
-           });
-        } catch (WebSocketException e) {
-
-           Log.d(TAG, e.toString());
-        }
-     }
+    
     
     /**
      * A placeholder fragment containing a simple view.
@@ -299,14 +260,16 @@ public class SearchActivity extends Activity implements Callback<Node[]>
                 }
                 stringPath = stringPath + " --> " + chosenNode.toString();
                 stringPath = stringPath.substring(4);  //Cut-off initial arrow from string display
-                ChatMessage m = new ChatMessage(stringPath);
-                String JSONMessage = ((SearchActivity)getActivity()).gson.toJson(m);
-                //((SearchActivity) getActivity()).mConnection.sendTextMessage(JSONMessage);
-                ((SearchActivity) getActivity()).start(JSONMessage);
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:" + chosenPhoneNumber));
+
+                //Intent intent = new Intent(Intent.ACTION_CALL);
+                //Intent intent = new Intent(getActivity(), PhoneActivity.class);
+                Intent intent = new Intent(getActivity(), TwilioActivity.class);
+                intent.putExtra("phone_number", chosenPhoneNumber);
+                intent.putExtra("company_id", chosenNode.getCompanyId());
+                intent.putExtra("string_path", stringPath);
+                //intent.setData(Uri.parse("tel:" + chosenPhoneNumber));
                 endActionInitiated = true;
-                
+
                 startActivity(intent);
             }
         }

@@ -18,4 +18,7 @@ public interface HerokuService
 	
     @POST("/responses")
     void addResponse(@Body SurveyQuestion question, Callback<String> cb);
+    
+    @GET("/requestCallToken")
+    void getCallToken(Callback<CallToken> cb);
 }
