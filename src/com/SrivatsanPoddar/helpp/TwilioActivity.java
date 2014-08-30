@@ -12,6 +12,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -35,7 +37,7 @@ public class TwilioActivity extends Activity implements View.OnClickListener
     private String pairsIndex;
     TextView instructionField;
     private Handler mHandler; 
-    private LinearLayout mainLayout;
+    private LinearLayout variableLayout;
     
     @Override
     public void onCreate(Bundle bundle)
@@ -56,7 +58,7 @@ public class TwilioActivity extends Activity implements View.OnClickListener
         //((SearchActivity) getActivity()).mConnection.sendTextMessage(JSONMessage);
         this.start(JSONMessage);
         
-        mainLayout = (LinearLayout) findViewById(R.id.twilio_layout);
+        variableLayout = (LinearLayout) findViewById(R.id.variable_layout);
         
         phone = new TwilioPhone(getApplicationContext(), company_id);
         //phone.connect(company_id);
@@ -66,7 +68,7 @@ public class TwilioActivity extends Activity implements View.OnClickListener
         ImageButton hangupButton = (ImageButton)findViewById(R.id.hangupButton);
         hangupButton.setOnClickListener(this);
         
-        ImageButton sendDigit = (ImageButton)findViewById(R.id.sendDigit);
+        ImageButton sendDigit = (ImageButton)findViewById(R.id.send_digit);
         sendDigit.setOnClickListener(this);
         
 // 
@@ -81,11 +83,12 @@ public class TwilioActivity extends Activity implements View.OnClickListener
     @Override
     public void onClick(View view)
     {
-        if (view.getId() == R.id.dialButton)
-            phone.connect(company_id);
-        else if (view.getId() == R.id.hangupButton)
+//        if (view.getId() == R.id.dialButton)
+//            phone.connect(company_id);
+//        else 
+        if (view.getId() == R.id.hangupButton)
             phone.disconnect();
-        else if (view.getId() == R.id.sendDigit) {
+        else if (view.getId() == R.id.send_digit) {
             Log.e("Send digit pushed","woo");
             phone.sendDigit();
         }
@@ -97,10 +100,11 @@ public class TwilioActivity extends Activity implements View.OnClickListener
 //        }
     }
     
-    public void onPause() {
-        super.onPause();
+    public void onDestroy() {
+        super.onDestroy();
         mHandler.removeCallbacks(pingServer);
         mConnection.disconnect();
+        phone.disconnect();
     }
     
     Runnable pingServer = new Runnable() {
@@ -161,6 +165,12 @@ public class TwilioActivity extends Activity implements View.OnClickListener
                      TwilioActivity.this.addEditText(m);  //Add instructions, text field and button UI
    
                  }
+                 //If a link was sent by the caller, then show a clickable link
+                 else if (m.request_format != null && m.request_format.equals("link")) {
+
+                         TwilioActivity.this.addLink(m);  //Add instructions, text field and button UI
+
+                 }
                  
                  
               }
@@ -176,6 +186,32 @@ public class TwilioActivity extends Activity implements View.OnClickListener
            Log.d(TAG, e.toString());
         }
      }
+    
+    //Adds a clickable link to the UI
+    public void addLink(ChatMessage m) {
+        
+        String displayText = m.message;  //Extract the link URL
+        String linkDescription = m.request_type;  
+        if ((linkDescription != null) && !linkDescription.isEmpty()) {
+            displayText = linkDescription + ": " + displayText;
+        }
+        
+        final LinearLayout toAdd = new LinearLayout(TwilioActivity.this);
+        toAdd.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams linLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        
+        LinearLayout.LayoutParams linkParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        linkParams.setMargins(20, 20, 20, 5);
+        TextView linkView = new TextView(TwilioActivity.this);
+        linkView.setGravity(Gravity.CENTER_HORIZONTAL);
+        
+        //linkView.setMovementMethod(LinkMovementMethod.getInstance());
+        linkView.setAutoLinkMask(Linkify.ALL);
+        linkView.setText(displayText);
+        toAdd.addView(linkView, linkParams);
+        variableLayout.addView(toAdd);
+        
+    }
     
     public void addEditText(ChatMessage m) {
         
@@ -234,7 +270,7 @@ public class TwilioActivity extends Activity implements View.OnClickListener
                     mConnection.sendTextMessage(JSONMessage);
                     
                     //Remove the view!
-                    mainLayout.removeView(toAdd);
+                    variableLayout.removeView(toAdd);
                     
                 }
 
@@ -242,6 +278,6 @@ public class TwilioActivity extends Activity implements View.OnClickListener
         });
         
         toAdd.addView(horizontalLayout, horizontalLayoutParams);
-        mainLayout.addView(toAdd);
+        variableLayout.addView(toAdd);
     }
 }
