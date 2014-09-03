@@ -8,7 +8,9 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -27,6 +29,10 @@ public class Splash extends Activity implements Callback<Node[]>
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.splash);
+        
+        // Set up shared preferences
+        SharedPreferences prefs = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+        prefs.edit().putInt("numFavorites", 0).apply();
         
         //Calculate passage of time to ensure splash screen displayed for 2s
         startTime = System.currentTimeMillis();

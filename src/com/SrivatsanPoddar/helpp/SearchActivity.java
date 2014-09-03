@@ -18,7 +18,9 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,11 +30,15 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.*;
 
@@ -117,25 +123,56 @@ public class SearchActivity extends Activity
     {
 
         Node[] fragNodes;
-        boolean endActionInitiated = false; // Flag to denote that an 'end
-                                            // action' has been reached i.e.
-                                            // phone call in order to trigger
-                                            // survey
+        boolean endActionInitiated = false; // Flag to denote that an 'end action' has been reached i.e.
+                                            // phone call in order to trigger survey
         EditText searchText;
         CustomListAdapter<Node> adapter;
         Node chosenNode;
+        SearchActivity act = null;
         
         @Override
         public void onActivityCreated(Bundle savedInstanceState)
         {
             super.onActivityCreated(savedInstanceState);
-            SearchActivity act = (SearchActivity) getActivity();
+            act = (SearchActivity) getActivity();
             fragNodes = act.nodes;
             
-            adapter = new CustomListAdapter<Node>(getActivity(),android.R.layout.simple_list_item_1,fragNodes);
-            //aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            //promotionsList.setAdapter(aa);
+            adapter = new CustomListAdapter<Node>(getActivity(),R.layout.search_list_row,fragNodes);
             setListAdapter(adapter);
+            
+            // TODO If coming from call, add that company to favorites
+            
+            // Mark favorites
+            /** SharedPreferences prefs = act.getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+            int favorites = prefs.getInt("numFavorites", 0);
+            for(int i = 0; i < getListView().getLastVisiblePosition(); i++)
+            {
+                getListView().getChildAt(i).setBackgroundResource(R.drawable.abc_list_selector_background_transition_holo_light);
+            } **/
+            
+            // Set up long click (favorites) listener
+            getListView().setOnItemLongClickListener(new OnItemLongClickListener()
+            {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long id)
+                {
+                    // Set up shared preferences
+                    SharedPreferences prefs = act.getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+                    int numFavorites = prefs.getInt("numFavorites", 0);
+                    
+                    Style.makeToast(act, fragNodes[position] + " added to Favorites");
+                    Log.e("New Favorite", numFavorites + 1 + " total");
+                    Node temp = fragNodes[position];
+                    fragNodes[position] = fragNodes[numFavorites];
+                    fragNodes[numFavorites] = temp;
+                    prefs.edit().putInt("numFavorites", numFavorites + 1).apply();
+                    
+                    // Set the item color to mark it favorite
+                    // view.setBackgroundResource(R.drawable.abc_list_selector_background_transition_holo_light);
+                    
+                    return true;
+                }
+            });
             
             // Set up google search listener
             final Button button = (Button) getActivity().findViewById(R.id.search_button);
@@ -209,13 +246,11 @@ public class SearchActivity extends Activity
         {
             super.onListItemClick(l, v, position, id);
             chosenNode = (Node) getListView().getItemAtPosition(position);
-            
-            //chosenNode = fragNodes[position];
             Log.e("Reached", position + "");
-            // Node[] childrenOfChosenNode = chosenNode.childrenNodes;
+            
             String chosenPhoneNumber = PhoneNumberUtils.stripSeparators(chosenNode.getPhoneNumber());
             if (chosenPhoneNumber == null)
-            {
+            {                
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
                 intent.putExtra("chosenNode", chosenNode);
                 intent.putExtra("path", ((SearchActivity)getActivity()).path);
@@ -223,6 +258,8 @@ public class SearchActivity extends Activity
             }
             else
             {
+                // TODO Add this one to favorites
+                
                 String stringPath = "";
                 
                 //Create string representing the path of the chosen nodes

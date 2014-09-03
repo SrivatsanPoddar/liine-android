@@ -88,9 +88,7 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
 		  		currentQuestionsIndex++;
 				questionDisplayText.setText(questions.get(currentQuestionsIndex).getDisplayText());
 				
-				//ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
-				CustomListAdapter<String> adapter = new CustomListAdapter(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
-		        
+				CustomListAdapter<String> adapter = new CustomListAdapter<String>(this,R.layout.search_list_row,questions.get(currentQuestionsIndex).getOptions());
 				optionsList.setAdapter(adapter);
 				
 		  	}
@@ -123,7 +121,6 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
     @Override
     public void failure(RetrofitError err)
     {
-        // TODO Auto-generated method stub
         Log.e("Error Retrieving Questions", err.toString());
     }
 
@@ -145,9 +142,11 @@ public class SurveyActivity extends Activity implements ListView.OnItemClickList
             questionDisplayText.setText(questions.get(currentQuestionsIndex).getDisplayText());
             Style.toOpenSans(this, questionDisplayText, "light");
             
-            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
-            CustomListAdapter<String> adapter = new CustomListAdapter(this,android.R.layout.simple_list_item_1,questions.get(currentQuestionsIndex).getOptions());
-            optionsList.setAdapter(adapter);   
+            Log.e("Setting adapter", "setting list adapter upon success");
+            
+            CustomListAdapter<String> adapter = new CustomListAdapter<String>(this,
+                    R.layout.search_list_row, questions.get(currentQuestionsIndex).getOptions());
+            optionsList.setAdapter(adapter);
         }
      
     }

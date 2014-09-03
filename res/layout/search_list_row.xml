@@ -2,16 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="horizontal" >
 
     <TextView
         android:id="@+id/display_text"
-        android:layout_width="match_parent"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
+        android:layout_weight="0.52"
         android:gravity="center"
         android:paddingBottom="17dp"
         android:paddingTop="17dp"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
- 
+
+
 </LinearLayout>
